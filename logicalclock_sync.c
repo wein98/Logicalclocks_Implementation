@@ -2,21 +2,28 @@
 #include <mpi.h>
 #include <time.h>
 
+// Function to print timestamps
 void printTimeStamp(int *timeStmpArr) {
     for (int i=0; i<3; i++) 
-    	printf("%d", timeStmpArr[i]);
+    	printf("%d ", timeStmpArr[i]);
     	
     printf("\n");
+}
+
+// Function to perform Rule RS3
+void rule3(int *localArr, int *otherArr) {
+    for(int i=0; i<3; i++)
+    	if (otherArr[i] > localArr[i]) 
+    	    localArr[i] = otherArr[i];
 }
 
 int main ( argc, argv )
 int argc;
 char **argv;
 {
-    int rank, size, timestamp;
+    int rank, size;
     int timeStampArr[3]={0};    // Rule RS1
     
-    MPI_Status status;
     MPI_Init( &argc, &argv );
     MPI_Comm_rank( MPI_COMM_WORLD, &rank );
     MPI_Comm_size( MPI_COMM_WORLD, &size );
@@ -47,9 +54,7 @@ char **argv;
         MPI_Send(timeStampArr, 3, MPI_INT, 1, 0, MPI_COMM_WORLD);
         // Rule RS3
         MPI_Recv(recvArr, 3, MPI_INT, 1, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        for(int i=0; i<size; i++)
-        	if (recvArr[i] > timeStampArr[i]) 
-        	    timeStampArr[i] = recvArr[i];
+        rule3(timeStampArr, recvArr);
         printf("Process: %d, Returned from: %d, Returned timestamp: ", rank, 1);
         printTimeStamp(timeStampArr);
         
@@ -62,9 +67,7 @@ char **argv;
         MPI_Recv(recvArr, 3, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         timeStampArr[rank] += 1;    // Rule RS2
         // Rule RS3
-        for(int i=0; i<size; i++)
-        	if (recvArr[i] > timeStampArr[i]) 
-        	    timeStampArr[i] = recvArr[i];
+        rule3(timeStampArr, recvArr);
         printf("Process: %d, receives from: %d, Returns timestamp: ", rank, 0);
         printTimeStamp(timeStampArr);
         // Handshake and sends back timestamp to it's source for tag 1
@@ -84,9 +87,7 @@ char **argv;
         MPI_Send(timeStampArr, 3, MPI_INT, 2, 0, MPI_COMM_WORLD);
         // Rule RS3
         MPI_Recv(recvArr, 3, MPI_INT, 2, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        for(int i=0; i<size; i++)
-        	if (recvArr[i] > timeStampArr[i]) 
-        	    timeStampArr[i] = recvArr[i];
+        rule3(timeStampArr, recvArr);
         printf("Process: %d, Returned from: %d, Returned timestamp: ", rank, 2);
         printTimeStamp(timeStampArr);
         
@@ -98,9 +99,7 @@ char **argv;
         MPI_Send(timeStampArr, 3, MPI_INT, 2, 2, MPI_COMM_WORLD);
         // Rule RS3
         MPI_Recv(recvArr, 3, MPI_INT, 2, 3, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        for(int i=0; i<size; i++)
-        	if (recvArr[i] > timeStampArr[i]) 
-        	    timeStampArr[i] = recvArr[i];
+        rule3(timeStampArr, recvArr);;
         printf("Process: %d, Returned from: %d, Returned timestamp: ", rank, 2);
         printTimeStamp(timeStampArr);
         
@@ -112,9 +111,7 @@ char **argv;
         MPI_Send(timeStampArr, 3, MPI_INT, 0, 4, MPI_COMM_WORLD);
         // Rule RS3
         MPI_Recv(recvArr, 3, MPI_INT, 0, 5, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        for(int i=0; i<size; i++)
-        	if (recvArr[i] > timeStampArr[i]) 
-        	    timeStampArr[i] = recvArr[i];
+        rule3(timeStampArr, recvArr);;
         printf("Process: %d, Returned from: %d, Returned timestamp: ", rank, 0);
         printTimeStamp(timeStampArr);
         
@@ -125,9 +122,7 @@ char **argv;
             MPI_Recv(recvArr, 3, MPI_INT, 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             timeStampArr[rank] += 1;    // Rule RS2
             // Rule RS3
-            for(int i=0; i<size; i++)
-            	if (recvArr[i] > timeStampArr[i]) 
-            	    timeStampArr[i] = recvArr[i];
+            rule3(timeStampArr, recvArr);
             printf("Process: %d, receives from: %d, Returns timestamp: ", rank, 1);
             printTimeStamp(timeStampArr);
             // Handshake and sends back timestamp to it's source for tag 1
@@ -137,9 +132,7 @@ char **argv;
             MPI_Recv(recvArr, 3, MPI_INT, 1, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             timeStampArr[rank] += 1;    // Rule RS2
             // Rule RS3
-            for(int i=0; i<size; i++)
-            	if (recvArr[i] > timeStampArr[i]) 
-            	    timeStampArr[i] = recvArr[i];
+            rule3(timeStampArr, recvArr);
             printf("Process: %d, receives from: %d, Returns timestamp: ", rank, 1);
             printTimeStamp(timeStampArr);
             // Handshake and sends back timestamp to it's source for tag 3
@@ -150,9 +143,7 @@ char **argv;
             MPI_Recv(recvArr, 3, MPI_INT, 1, 4, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             timeStampArr[rank] += 1;    // Rule RS2
             // Rule RS3
-            for(int i=0; i<size; i++)
-            	if (recvArr[i] > timeStampArr[i]) 
-            	    timeStampArr[i] = recvArr[i];
+            rule3(timeStampArr, recvArr);
             printf("Process: %d, receives from: %d, Returns timestamp: ", rank, 1);
             printTimeStamp(timeStampArr);
             // Handshake and sends back timestamp to it's source for tag 5
@@ -175,9 +166,7 @@ char **argv;
             MPI_Send(timeStampArr, 3, MPI_INT, 0, 0, MPI_COMM_WORLD);
             // Rule RS3
             MPI_Recv(recvArr, 3, MPI_INT, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            for(int i=0; i<size; i++)
-            	if (recvArr[i] > timeStampArr[i]) 
-            	    timeStampArr[i] = recvArr[i];
+            rule3(timeStampArr, recvArr);
             printf("Process: %d, Returned from: %d, Returned timestamp: ", rank, 0);
             printTimeStamp(timeStampArr);
             
@@ -186,9 +175,7 @@ char **argv;
 	        MPI_Recv(recvArr, 3, MPI_INT, 2, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             timeStampArr[rank] += 1;    // Rule RS2
             // Rule RS3
-            for(int i=0; i<size; i++)
-            	if (recvArr[i] > timeStampArr[i]) 
-            	    timeStampArr[i] = recvArr[i];
+            rule3(timeStampArr, recvArr);
             printf("Process: %d, receives from: %d, Returns timestamp: ", rank, 1);
             printTimeStamp(timeStampArr);
             // Handshake and sends back timestamp to it's source fpr tag 2 and 3
@@ -197,6 +184,5 @@ char **argv;
     }
     
     MPI_Finalize();
-    
     return 0;
 }
