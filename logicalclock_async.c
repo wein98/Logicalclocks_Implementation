@@ -69,7 +69,7 @@ char **argv;
         // Rule RA4
         rule4(timeStampArr, recvArr, nextP2);
         	    
-        printf("Process: %d, receives from: %d, aaaTimestamp: ", rank, nextP2);
+        printf("Process: %d, receives from: %d, Timestamp: ", rank, nextP2);
         printTimeStamp(timeStampArr);
         
     } else if (rank == 1) {
@@ -81,7 +81,7 @@ char **argv;
         // Rule RA4
         rule4(timeStampArr, recvArr, nextP2);
         	    
-        printf("Process: %d, receives from: %d, aaaTimestamp: ", rank, nextP2);
+        printf("Process: %d, receives from: %d, Timestamp: ", rank, nextP2);
         printTimeStamp(timeStampArr);
         
         // Receives something from process 3
@@ -107,7 +107,7 @@ char **argv;
         // Rule RA4
         rule4(timeStampArr, recvArr, nextP2);        
         	    
-        printf("Process: %d, receives from: %d, aaaTimestamp: ", rank, nextP2);
+        printf("Process: %d, receives from: %d, Timestamp: ", rank, nextP2);
         printTimeStamp(timeStampArr);
         
         // Do local computation
